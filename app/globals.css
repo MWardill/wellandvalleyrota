@@ -31,10 +31,7 @@
   --color-error: #8b2e2e;
   --color-error-content: #ffffff;
 
-  --radius-selector: 0rem;
-  --radius-field: 0rem;
-  --radius-box: 0rem;
-  --border: 1.5px;
+
 }
 
 /* Serif display headings, matching the original Playfair usage. */

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { auth, signIn, signOut } from "@/lib/auth";
 
 export default async function AuthButton() {
@@ -5,20 +6,45 @@ export default async function AuthButton() {
 
   if (session?.user) {
     return (
-      <form
-        action={async () => {
-          "use server";
-          await signOut({ redirectTo: "/" });
-        }}
-        className="flex items-center gap-3"
-      >
-        <span className="text-sm text-primary-content/80 hidden sm:inline">
-          {session.user.email}
-        </span>
-        <button type="submit" className="btn btn-sm btn-outline">
-          Sign out
-        </button>
-      </form>
+      <div className="dropdown dropdown-end">
+        <div 
+          tabIndex={0} 
+          role="button" 
+          className="btn btn-circle btn-ghost overflow-hidden p-0" 
+          title="Account menu"
+          aria-label="Account menu"
+        >
+          {session.user.image ? (
+            <img 
+              src={session.user.image} 
+              alt="Profile picture" 
+              className="w-10 h-10 object-cover" 
+            />
+          ) : (
+            <div className="w-10 h-10 bg-primary-content/20 flex items-center justify-center text-primary-content font-bold uppercase text-lg">
+              {session.user.email?.[0] ?? "?"}
+            </div>
+          )}
+        </div>
+        <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow mt-2">
+          <li>
+            <Link href="/settings">Settings</Link>
+          </li>
+          <li>
+            <form
+              action={async () => {
+                "use server";
+                await signOut({ redirectTo: "/" });
+              }}
+              className="w-full flex"
+            >
+              <button type="submit" className="w-full text-left">
+                Sign Out
+              </button>
+            </form>
+          </li>
+        </ul>
+      </div>
     );
   }
 
@@ -26,11 +52,22 @@ export default async function AuthButton() {
     <form
       action={async () => {
         "use server";
-        await signIn("google", { redirectTo: "/settings" });
+        await signIn("google");
       }}
     >
-      <button type="submit" className="btn btn-sm btn-secondary">
-        Sign in with Google
+      <button 
+        type="submit" 
+        className="btn btn-circle btn-ghost" 
+        title="Sign in with Google"
+        aria-label="Sign in with Google"
+      >
+        <svg 
+          className="w-8 h-8 text-primary-content/80" 
+          fill="currentColor" 
+          viewBox="0 0 24 24"
+        >
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
+        </svg>
       </button>
     </form>
   );
