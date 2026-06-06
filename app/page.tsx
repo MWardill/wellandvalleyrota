@@ -1,9 +1,13 @@
+import SiteHeader from "@/components/site-header";
+import NavTabs from "@/components/nav-tabs";
+
 export default function Home() {
   return (
-    <main className="p-8 space-y-4">
-      <h1 className="font-display text-3xl text-primary">Gallery theme check</h1>
-      <button className="btn btn-primary">Primary</button>
-      <button className="btn btn-secondary">Secondary</button>
-    </main>
+    <>
+      <SiteHeader />
+      <main className="max-w-4xl mx-auto px-4 py-8">
+        <NavTabs />
+      </main>
+    </>
   );
 }
