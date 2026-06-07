@@ -28,6 +28,9 @@ const TABS = [
 ];
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  // Vercel automatically populates this environment variable at build time
+  const commitSha = process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA?.substring(0, 7) || "dev";
+
   return (
     <html lang="en" data-theme="gallery" className={`${playfair.variable} ${sourceSans.variable}`} suppressHydrationWarning>
       <body style={{ fontFamily: "var(--font-source-sans), sans-serif" }}>
@@ -36,6 +39,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <NavTabs tabs={TABS} />
           {children}
         </main>
+        <div className="fixed bottom-2 right-3 text-[10px] text-base-content/30 font-mono pointer-events-none select-none z-50">
+          rev {commitSha}
+        </div>
       </body>
     </html>
   );
