@@ -1,44 +1,17 @@
-"use client";
+import { auth } from "@/lib/auth";
+import AuthButton from "./auth-button";
+import NavLinks, { TabDef } from "./nav-links";
 
-import { useState } from "react";
-import Link from "next/link";
-import ComingSoon from "./coming-soon";
-
-const TABS = [
-  { id: "book", label: "Book a Shift" },
-  { id: "overview", label: "Full Overview" },
-  { id: "booked", label: "Who's Booked" },
-] as const;
-
-type TabId = (typeof TABS)[number]["id"];
-
-export default function NavTabs() {
-  const [active, setActive] = useState<TabId>("book");
-
-  const labels: Record<TabId, string> = {
-    book: "Book a Shift",
-    overview: "Full Overview",
-    booked: "Who's Booked",
-  };
+export default async function NavTabs({ tabs }: { tabs: TabDef[] }) {
+  const session = await auth();
+  const isAuthenticated = !!session?.user;
 
   return (
-    <div>
-      <div role="tablist" className="tabs tabs-bordered mb-6">
-        {TABS.map((t) => (
-          <button
-            key={t.id}
-            role="tab"
-            className={`tab ${active === t.id ? "tab-active" : ""}`}
-            onClick={() => setActive(t.id)}
-          >
-            {t.label}
-          </button>
-        ))}
-        <Link href="/settings" className="tab" role="tab">
-          Settings
-        </Link>
+    <div className="flex items-end justify-between border-b border-base-300 mb-6">
+      <NavLinks tabs={tabs} isAuthenticated={isAuthenticated} />
+      <div className="pb-1">
+        <AuthButton />
       </div>
-      <ComingSoon feature={labels[active]} />
     </div>
   );
 }

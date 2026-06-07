@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Playfair_Display, Source_Sans_3 } from "next/font/google";
+import SiteHeader from "@/components/site-header";
+import NavTabs from "@/components/nav-tabs";
 import "./globals.css";
 
 const playfair = Playfair_Display({
@@ -18,10 +20,23 @@ export const metadata: Metadata = {
   description: "Exhibition stewarding rota for the Welland Valley Art Society.",
 };
 
+const TABS = [
+  { id: "book", label: "Book a Shift", href: "/" },
+  { id: "overview", label: "Full Overview", href: "/overview" },
+  { id: "booked", label: "Who's Booked", href: "/booked" },
+  { id: "settings", label: "Settings", href: "/settings", requireAuthentication: true },
+];
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" data-theme="gallery" className={`${playfair.variable} ${sourceSans.variable}`}>
-      <body style={{ fontFamily: "var(--font-source-sans), sans-serif" }}>{children}</body>
+    <html lang="en" data-theme="gallery" className={`${playfair.variable} ${sourceSans.variable}`} suppressHydrationWarning>
+      <body style={{ fontFamily: "var(--font-source-sans), sans-serif" }}>
+        <SiteHeader />
+        <main className="max-w-7xl mx-auto px-4 py-8">
+          <NavTabs tabs={TABS} />
+          {children}
+        </main>
+      </body>
     </html>
   );
 }

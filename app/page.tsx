@@ -1,13 +1,5 @@
-import SiteHeader from "@/components/site-header";
-import NavTabs from "@/components/nav-tabs";
+import ComingSoon from "@/components/coming-soon";
 
-export default function Home() {
-  return (
-    <>
-      <SiteHeader />
-      <main className="max-w-4xl mx-auto px-4 py-8">
-        <NavTabs />
-      </main>
-    </>
-  );
+export default function HomePage() {
+  return <ComingSoon feature="Book a Shift" />;
 }
