@@ -6,7 +6,7 @@ import { validateExhibitionInput } from "./validation";
 import type { Exhibition, ExhibitionInput } from "./types";
 
 const TAB = "Exhibitions";
-const RANGE = `${TAB}!A:F`;
+const RANGE = `${TAB}!A:G`;
 
 /** Ensure the tab exists with a header row. Safe to call repeatedly. */
 async function ensureSheet(): Promise<void> {
@@ -55,6 +55,7 @@ export async function createExhibition(input: ExhibitionInput): Promise<Exhibiti
     title: input.title.trim(),
     startDate: input.startDate,
     endDate: input.endDate,
+    active: false,
     createdAt: new Date().toISOString(),
   };
 
@@ -100,6 +101,7 @@ export async function updateExhibition(id: string, input: ExhibitionInput): Prom
     title: input.title.trim(),
     startDate: input.startDate,
     endDate: input.endDate,
+    // preserve active flag — toggled separately via setActiveExhibition
   };
 
   const sheets = getSheetsClient();
@@ -110,6 +112,52 @@ export async function updateExhibition(id: string, input: ExhibitionInput): Prom
     requestBody: { values: [exhibitionToRow(updated)] },
   });
   return updated;
+}
+
+/**
+ * Pick the active exhibition.
+ * Prefers the one explicitly marked active; falls back to date-based selection
+ * (soonest upcoming, or most recently ended) for backwards compatibility.
+ */
+export function getActiveExhibition(exhibitions: Exhibition[]): Exhibition | null {
+  if (exhibitions.length === 0) return null;
+  const explicit = exhibitions.find(e => e.active);
+  if (explicit) return explicit;
+  // Fallback: date-based
+  const today    = new Date().toISOString().split("T")[0];
+  const upcoming = exhibitions
+    .filter(e => e.endDate >= today)
+    .sort((a, b) => a.startDate.localeCompare(b.startDate));
+  if (upcoming.length > 0) return upcoming[0];
+  return [...exhibitions].sort((a, b) => b.endDate.localeCompare(a.endDate))[0];
+}
+
+/**
+ * Mark one exhibition as active and clear the flag on all others.
+ * Uses a single batchUpdate so the sheet stays consistent.
+ */
+export async function setActiveExhibition(id: string): Promise<void> {
+  await ensureSheet();
+  const sheets        = getSheetsClient();
+  const spreadsheetId = getSheetId();
+
+  // Read column A to find every row's id (row 1 = header, rows 2+ = data).
+  const col  = await sheets.spreadsheets.values.get({ spreadsheetId, range: `${TAB}!A:A` });
+  const rows = col.data.values ?? [];
+
+  // Build one update per data row setting column G (active) to "true"/"false".
+  // Column G is appended after createdAt so existing rows without it read as false.
+  const data = rows.slice(1).map((row, i) => ({
+    range:  `${TAB}!G${i + 2}`,   // i+2 because slice(1) skips header (row 1)
+    values: [[row[0] === id ? "true" : "false"]],
+  }));
+
+  if (data.length === 0) return;
+
+  await sheets.spreadsheets.values.batchUpdate({
+    spreadsheetId,
+    requestBody: { valueInputOption: "RAW", data },
+  });
 }
 
 export async function deleteExhibition(id: string): Promise<void> {
