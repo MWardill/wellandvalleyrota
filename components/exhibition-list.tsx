@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import type { Exhibition } from "@/lib/types";
-import { deleteExhibitionAction } from "@/actions/exhibitions";
+import { deleteExhibitionAction, setActiveExhibitionAction } from "@/actions/exhibitions";
 import ExhibitionForm from "./exhibition-form";
 
 function formatRange(start: string, end: string): string {
@@ -36,15 +36,32 @@ export default function ExhibitionList({ exhibitions }: { exhibitions: Exhibitio
           ) : (
             <div className="flex items-start justify-between gap-4">
               <div>
-                <div className="font-semibold text-primary">
-                  {ex.title || ex.societyName}
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="font-semibold text-primary">
+                    {ex.title || ex.societyName}
+                  </span>
+                  {ex.active && (
+                    <span className="text-[11px] font-semibold tracking-wide
+                                     uppercase bg-primary text-primary-content
+                                     px-2 py-0.5">
+                      Active
+                    </span>
+                  )}
                 </div>
                 <div className="text-sm text-base-content/70">{ex.societyName}</div>
                 <div className="text-sm text-base-content/70">
                   {formatRange(ex.startDate, ex.endDate)}
                 </div>
               </div>
-              <div className="flex gap-2">
+              <div className="flex gap-2 flex-wrap justify-end">
+                {!ex.active && (
+                  <form action={setActiveExhibitionAction}>
+                    <input type="hidden" name="id" value={ex.id} />
+                    <button type="submit" className="btn btn-sm btn-primary">
+                      Set active
+                    </button>
+                  </form>
+                )}
                 <button className="btn btn-sm btn-outline" onClick={() => setEditingId(ex.id)}>
                   Edit
                 </button>

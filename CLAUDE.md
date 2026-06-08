@@ -6,10 +6,6 @@ server code. Auth is Google sign-in restricted to an email allowlist.
 
 ## House rules (always follow these)
 
-1. **Never commit or push to `main` / `master`.** Before doing ANY work, create
-   (or switch to) a `release/v1.x.x` branch. The `/run` and `/finish` commands
-   enforce this. (Exception, already taken: the initial Phase-1 build was
-   committed to `main` at the maintainer's request.)
 2. **Secrets are server-only.** Never put API keys, the Google private key, the
    sheet id, or the allowlist into client components or committed files. They
    live in environment variables and are used only in `lib/*` server modules and
@@ -38,8 +34,6 @@ server code. Auth is Google sign-in restricted to an email allowlist.
 - `npm run dev` — local dev server (or use `/run`).
 - `npm test` — Vitest unit tests.
 - `npx tsc --noEmit` — type-check.
-- `/run` — ensure a release branch, then start dev.
-- `/finish` — commit, push, and promote to Vercel production.
 
 ## Environment variables
 

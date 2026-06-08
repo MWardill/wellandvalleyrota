@@ -7,6 +7,7 @@ import {
   createExhibition,
   updateExhibition,
   deleteExhibition,
+  setActiveExhibition,
 } from "@/lib/exhibitions";
 import type { ExhibitionInput } from "@/lib/types";
 
@@ -46,4 +47,15 @@ export async function deleteExhibitionAction(formData: FormData): Promise<void> 
   if (!id) throw new Error("Missing exhibition id.");
   await deleteExhibition(id);
   revalidatePath("/settings");
+}
+
+export async function setActiveExhibitionAction(formData: FormData): Promise<void> {
+  await assertAllowed();
+  const id = String(formData.get("id") ?? "");
+  if (!id) throw new Error("Missing exhibition id.");
+  await setActiveExhibition(id);
+  revalidatePath("/settings");
+  revalidatePath("/");
+  revalidatePath("/overview");
+  revalidatePath("/booked");
 }
