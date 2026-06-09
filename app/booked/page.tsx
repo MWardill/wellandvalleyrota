@@ -50,9 +50,9 @@ export default async function BookedPage() {
       bookings
         .filter(b => b.date === dk && b.shiftId === shift.id)
         .forEach(b => {
-          const key = b.name.trim().toLowerCase() + "|" + b.phone.trim();
+          const key = b.name.trim().toLowerCase();
           if (!people[key]) {
-            people[key] = { name: b.name.trim(), phone: b.phone, shifts: [] };
+            people[key] = { name: b.name.trim(), phone: b.phone.trim(), shifts: [] };
           }
           people[key].shifts.push({ date: d, shiftLabel: shift.label });
         });
@@ -95,13 +95,13 @@ export default async function BookedPage() {
           {active.title}
         </p>
       )}
-      <p className="text-sm text-base-content/60 mb-6">
+      <p className="text-sm text-base-content mb-6">
         All volunteers who have committed, listed alphabetically by surname.
       </p>
 
       <div className="divide-y divide-base-300">
         {entries.map(entry => (
-          <div key={entry.name + "|" + entry.phone} className="py-4">
+          <div key={entry.name.toLowerCase()} className="py-4">
             <div className="font-semibold text-[15px] text-primary">
               {entry.name}
             </div>

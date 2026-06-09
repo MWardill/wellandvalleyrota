@@ -1,4 +1,5 @@
 import "server-only";
+import { cache } from "react";
 import { randomUUID } from "crypto";
 import { getSheetsClient, getSheetId } from "./sheets";
 import { EXHIBITION_HEADER, exhibitionToRow, rowToExhibition } from "./sheet-map";
@@ -9,7 +10,7 @@ const TAB = "Exhibitions";
 const RANGE = `${TAB}!A:G`;
 
 /** Ensure the tab exists with a header row. Safe to call repeatedly. */
-async function ensureSheet(): Promise<void> {
+const ensureSheet = cache(async (): Promise<void> => {
   const sheets = getSheetsClient();
   const spreadsheetId = getSheetId();
 
@@ -31,9 +32,9 @@ async function ensureSheet(): Promise<void> {
       requestBody: { values: [[...EXHIBITION_HEADER]] },
     });
   }
-}
+});
 
-export async function listExhibitions(): Promise<Exhibition[]> {
+export const listExhibitions = cache(async (): Promise<Exhibition[]> => {
   await ensureSheet();
   const sheets = getSheetsClient();
   const res = await sheets.spreadsheets.values.get({ spreadsheetId: getSheetId(), range: RANGE });
@@ -42,7 +43,7 @@ export async function listExhibitions(): Promise<Exhibition[]> {
     .slice(1) // skip header
     .map((r) => rowToExhibition(r as string[]))
     .filter((e): e is Exhibition => e !== null);
-}
+});
 
 export async function createExhibition(input: ExhibitionInput): Promise<Exhibition> {
   const result = validateExhibitionInput(input);

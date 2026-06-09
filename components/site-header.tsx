@@ -1,4 +1,8 @@
-export default function SiteHeader() {
+interface Props {
+  dateRange?: string | null;
+}
+
+export default function SiteHeader({ dateRange }: Props) {
   return (
     <header className="bg-primary border-b-[3px] border-secondary">
       <div className="max-w-7xl mx-auto px-6 py-7 flex items-start justify-between gap-4">
@@ -9,8 +13,13 @@ export default function SiteHeader() {
           <h1 className="font-display text-2xl text-primary-content font-normal leading-tight">
             Welland Valley Art Society
             <br />
-            <em className="text-xl">Volunteer Rota</em>
+            <em className="text-xl">Stewarding Rosta</em>
           </h1>
+          {dateRange && (
+            <p className="text-primary-content/70 text-xs mt-1.5 tracking-wide">
+              {dateRange}
+            </p>
+          )}
         </div>
       </div>
     </header>

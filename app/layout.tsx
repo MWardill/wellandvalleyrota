@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Playfair_Display, Source_Sans_3 } from "next/font/google";
 import SiteHeader from "@/components/site-header";
 import NavTabs from "@/components/nav-tabs";
+import { listExhibitions, getActiveExhibition } from "@/lib/exhibitions";
 import "./globals.css";
 
 const playfair = Playfair_Display({
@@ -16,25 +17,36 @@ const sourceSans = Source_Sans_3({
 });
 
 export const metadata: Metadata = {
-  title: "Welland Valley Art Society — Volunteer Rota",
+  title: "Welland Valley Art Society — Stewarding Rosta",
   description: "Exhibition stewarding rota for the Welland Valley Art Society.",
 };
 
 const TABS = [
-  { id: "book", label: "Book a Shift", href: "/" },
+  { id: "book", label: "Book a Shift", href: "/book" },
   { id: "overview", label: "Full Overview", href: "/overview" },
   { id: "booked", label: "Who's Booked", href: "/booked" },
   { id: "settings", label: "Settings", href: "/settings", requireAuthentication: true },
 ];
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
-  // Vercel automatically populates this environment variable at build time
+function fmtDate(iso: string) {
+  return new Date(iso + "T12:00:00").toLocaleDateString("en-GB", {
+    day: "numeric", month: "long", year: "numeric",
+  });
+}
+
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const commitSha = process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA?.substring(0, 7) || "dev";
+
+  const exhibitions = await listExhibitions();
+  const active = getActiveExhibition(exhibitions);
+  const dateRange = active
+    ? `${fmtDate(active.startDate)} – ${fmtDate(active.endDate)}`
+    : null;
 
   return (
     <html lang="en" data-theme="gallery" className={`${playfair.variable} ${sourceSans.variable}`} suppressHydrationWarning>
       <body style={{ fontFamily: "var(--font-source-sans), sans-serif" }}>
-        <SiteHeader />
+        <SiteHeader dateRange={dateRange} />
         <main className="max-w-7xl mx-auto px-4 py-8">
           <NavTabs tabs={TABS} />
           {children}

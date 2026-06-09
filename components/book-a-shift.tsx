@@ -132,19 +132,23 @@ export default function BookAShift({ exhibition, bookings }: Props) {
                 const totalBooked = SHIFTS.reduce(
                   (a, s) => a + getSlot(dk, s.id).length, 0
                 );
-                const isFull   = totalBooked >= SHIFTS.length * MAX_PER_SLOT;
+                const totalSlots = SHIFTS.length * MAX_PER_SLOT;
+                const isFull   = totalBooked >= totalSlots;
                 const isActive = selectedDate === dk;
+
+                const statusClass = isActive
+                  ? "bg-primary border-primary text-primary-content"
+                  : isFull
+                    ? "bg-red-100 border-red-400 text-red-800 hover:border-red-600"
+                    : totalBooked > 0
+                      ? "bg-amber-50 border-amber-400 text-amber-800 hover:border-amber-600"
+                      : "bg-green-50 border-green-400 text-green-800 hover:border-green-600";
 
                 return (
                   <button
                     key={dk}
                     onClick={() => setSelectedDate(dk)}
-                    className={[
-                      "px-3 py-1.5 border text-center min-w-[62px] text-sm transition-all",
-                      isActive
-                        ? "bg-primary border-primary text-primary-content"
-                        : "bg-white border-base-300 text-base-content hover:border-primary hover:text-primary",
-                    ].join(" ")}
+                    className={`px-3 py-1.5 border text-center min-w-[62px] text-sm transition-all ${statusClass}`}
                   >
                     <div className="text-[10px] opacity-70">{fmtWday(d)}</div>
                     <div className="font-semibold">{fmtShort(d)}</div>
