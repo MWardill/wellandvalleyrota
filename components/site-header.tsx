@@ -7,7 +7,7 @@ interface Props {
 export default function SiteHeader({ dateRange }: Props) {
   return (
     <header className="bg-primary border-b-[3px] border-secondary">
-      <div className="max-w-7xl mx-auto px-6 py-7 flex items-start justify-between gap-4">
+      <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between gap-4">
         <div>
           <div className="text-secondary text-[11px] tracking-[0.18em] uppercase mb-1.5">
             Exhibition Stewarding
@@ -26,8 +26,8 @@ export default function SiteHeader({ dateRange }: Props) {
         <Image
           src="/wvas-logo.jpg"
           alt="Welland Valley Art Society"
-          width={90}
-          height={90}
+          width={240}
+          height={110}
           className="object-contain flex-shrink-0"
           priority
         />
