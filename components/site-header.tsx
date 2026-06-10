@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 interface Props {
   dateRange?: string | null;
 }
@@ -21,6 +23,14 @@ export default function SiteHeader({ dateRange }: Props) {
             </p>
           )}
         </div>
+        <Image
+          src="/wvas-logo.jpg"
+          alt="Welland Valley Art Society"
+          width={90}
+          height={90}
+          className="object-contain flex-shrink-0"
+          priority
+        />
       </div>
     </header>
   );
