@@ -25,6 +25,7 @@ const TABS = [
   { id: "book", label: "Book a Shift", href: "/book" },
   { id: "overview", label: "Full Overview", href: "/overview" },
   { id: "booked", label: "Who's Booked", href: "/booked" },
+  { id: "help", label: "How to Use", href: "/help" },
   { id: "settings", label: "Settings", href: "/settings", requireAuthentication: true },
 ];
 
