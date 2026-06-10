@@ -1,5 +1,6 @@
 import { listExhibitions, getActiveExhibition } from "@/lib/exhibitions";
 import { listBookings } from "@/lib/bookings";
+import { formatPhone } from "@/lib/format";
 import {
   getExhibitionDates,
   getSpecialDay,
@@ -130,7 +131,7 @@ export default async function OverviewPage() {
                                     {p.name}
                                     {p.phone && (
                                       <span className="text-base-content/45">
-                                        {" "}· {p.phone}
+                                        {" "}· {formatPhone(p.phone)}
                                       </span>
                                     )}
                                   </div>

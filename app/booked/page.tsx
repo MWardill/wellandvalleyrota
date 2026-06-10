@@ -1,5 +1,6 @@
 import { listExhibitions, getActiveExhibition } from "@/lib/exhibitions";
 import { listBookings } from "@/lib/bookings";
+import { formatPhone } from "@/lib/format";
 import {
   getExhibitionDates,
   getSpecialDay,
@@ -107,7 +108,7 @@ export default async function BookedPage() {
             </div>
             {entry.phone && (
               <div className="text-xs text-base-content/45 mb-1.5">
-                {entry.phone}
+                {formatPhone(entry.phone)}
               </div>
             )}
             <div className="space-y-0.5 mt-1">
