@@ -26,8 +26,8 @@ export default function SiteHeader({ dateRange }: Props) {
         <Image
           src="/wvas-logo.jpg"
           alt="Welland Valley Art Society"
-          width={225}
-          height={225}
+          width={240}
+          height={110}
           className="object-contain flex-shrink-0"
           priority
         />
