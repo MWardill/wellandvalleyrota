@@ -13,6 +13,11 @@ export default function HelpPage() {
       </section>
 
       <section>
+        <h3 className="font-display text-lg text-primary mb-1">Cancelling a shift</h3>
+        <p>Go to the <strong>Book a Shift</strong> tab and find the date of the shift you want to cancel. Click the <em>&lsquo;Cancel&rsquo;</em> button adjacent to your name. Please only cancel your own bookings.</p>
+      </section>
+
+      <section>
         <h3 className="font-display text-lg text-primary mb-1">Checking who&apos;s booked</h3>
         <p>The <strong>Who&apos;s Booked</strong> tab shows a list of everyone who has signed up, along with which shifts they&apos;re covering. This is useful if you want to see who you&apos;ll be stewarding alongside.</p>
       </section>
