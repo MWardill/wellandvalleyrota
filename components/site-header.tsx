@@ -28,7 +28,7 @@ export default function SiteHeader({ dateRange }: Props) {
           alt="Welland Valley Art Society"
           width={240}
           height={110}
-          className="object-contain flex-shrink-0"
+          className="object-contain flex-shrink-0 hidden sm:block"
           priority
         />
       </div>
