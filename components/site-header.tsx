@@ -23,14 +23,16 @@ export default function SiteHeader({ dateRange }: Props) {
             </p>
           )}
         </div>
-        <Image
-          src="/wvas-logo.jpg"
-          alt="Welland Valley Art Society"
-          width={240}
-          height={110}
-          className="object-contain flex-shrink-0 hidden sm:block"
-          priority
-        />
+        <div className="hidden sm:block flex-shrink-0">
+          <Image
+            src="/wvas-logo.jpg"
+            alt="Welland Valley Art Society"
+            width={240}
+            height={110}
+            className="object-contain"
+            priority
+          />
+        </div>
       </div>
     </header>
   );
