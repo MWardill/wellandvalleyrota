@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-export type TabDef = { id: string; label: string; href: string; requireAuthentication?: boolean };
+export type TabDef = { id: string; label: string; href: string; requireAuthentication?: boolean; hideOnMobile?: boolean };
 
 export default function NavLinks({ tabs, isAuthenticated }: { tabs: TabDef[], isAuthenticated: boolean }) {
   const pathname = usePathname();
@@ -19,7 +19,7 @@ export default function NavLinks({ tabs, isAuthenticated }: { tabs: TabDef[], is
             key={t.id}
             href={t.href}
             role="tab"
-            className={`tab ${isActive ? "tab-active" : ""}`}
+            className={`tab ${isActive ? "tab-active" : ""} ${t.hideOnMobile ? "hidden sm:inline-flex" : ""}`}
           >
             {t.label}
           </Link>

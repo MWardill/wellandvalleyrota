@@ -9,7 +9,7 @@ export default async function NavTabs({ tabs }: { tabs: TabDef[] }) {
   return (
     <div className="flex items-end justify-between border-b border-base-300 mb-6">
       <NavLinks tabs={tabs} isAuthenticated={isAuthenticated} />
-      <div className="pb-1">
+      <div className="pb-1 hidden sm:flex">
         <AuthButton />
       </div>
     </div>
