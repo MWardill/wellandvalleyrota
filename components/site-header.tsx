@@ -12,7 +12,7 @@ export default function SiteHeader({ dateRange }: Props) {
           <h1 className="font-display text-2xl text-primary-content font-normal leading-tight">
             Welland Valley Art Society
             <br />
-            <em className="text-xl">Exhibition Stewarding Rosta</em>
+            <em className="text-xl">Exhibition Stewarding Rota</em>
           </h1>
           {dateRange && (
             <p className="text-primary-content/70 text-xs mt-1.5 tracking-wide">
