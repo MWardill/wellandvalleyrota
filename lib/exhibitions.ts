@@ -89,12 +89,21 @@ export async function updateExhibition(id: string, input: ExhibitionInput): Prom
   const result = validateExhibitionInput(input);
   if (!result.ok) throw new Error("Invalid exhibition: " + JSON.stringify(result.errors));
 
-  const all = await listExhibitions();
-  const existing = all.find((e) => e.id === id);
-  if (!existing) throw new Error("Exhibition not found: " + id);
+  await ensureSheet();
+  const sheets = getSheetsClient();
+  const res = await sheets.spreadsheets.values.get({ spreadsheetId: getSheetId(), range: RANGE });
+  const rows = res.data.values ?? [];
 
-  const rowNumber = await findRowNumber(id);
-  if (rowNumber === null) throw new Error("Exhibition row not found: " + id);
+  let rowNumber: number | null = null;
+  let existing: Exhibition | null = null;
+  for (let i = 1; i < rows.length; i++) {
+    if (rows[i]?.[0] === id) {
+      rowNumber = i + 1;
+      existing = rowToExhibition(rows[i] as string[]);
+      break;
+    }
+  }
+  if (!existing || rowNumber === null) throw new Error("Exhibition not found: " + id);
 
   const updated: Exhibition = {
     ...existing,
@@ -105,7 +114,6 @@ export async function updateExhibition(id: string, input: ExhibitionInput): Prom
     // preserve active flag — toggled separately via setActiveExhibition
   };
 
-  const sheets = getSheetsClient();
   await sheets.spreadsheets.values.update({
     spreadsheetId: getSheetId(),
     range: `${TAB}!A${rowNumber}:G${rowNumber}`,
