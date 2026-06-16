@@ -108,7 +108,7 @@ export async function updateExhibition(id: string, input: ExhibitionInput): Prom
   const sheets = getSheetsClient();
   await sheets.spreadsheets.values.update({
     spreadsheetId: getSheetId(),
-    range: `${TAB}!A${rowNumber}:F${rowNumber}`,
+    range: `${TAB}!A${rowNumber}:G${rowNumber}`,
     valueInputOption: "RAW",
     requestBody: { values: [exhibitionToRow(updated)] },
   });
