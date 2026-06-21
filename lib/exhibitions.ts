@@ -18,7 +18,7 @@ const ensureSheet = cache(async (): Promise<void> => {
   const meta = await sheets.spreadsheets.get({ spreadsheetId });
   const existingTitles = meta.data.sheets?.map(s => s.properties?.title) || [];
 
-  const requests: any[] = [];
+  const requests: Array<{ addSheet: { properties: { title: string } } }> = [];
   if (!existingTitles.includes(TAB)) {
     requests.push({ addSheet: { properties: { title: TAB } } });
   }

@@ -39,7 +39,7 @@ const mockClient = {
 describe("exhibitions", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.mocked(sheets.getSheetsClient).mockReturnValue(mockClient as any);
+    vi.mocked(sheets.getSheetsClient).mockReturnValue(mockClient as unknown as ReturnType<typeof sheets.getSheetsClient>);
     
     // Mock ensureSheet meta calls
     mockSpreadsheetsGet.mockResolvedValue({

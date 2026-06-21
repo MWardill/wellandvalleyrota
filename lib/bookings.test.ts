@@ -34,7 +34,7 @@ const mockClient = {
 describe("bookings", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.mocked(sheets.getSheetsClient).mockReturnValue(mockClient as any);
+    vi.mocked(sheets.getSheetsClient).mockReturnValue(mockClient as unknown as ReturnType<typeof sheets.getSheetsClient>);
 
     mockSpreadsheetsGet.mockResolvedValue({
       data: {
