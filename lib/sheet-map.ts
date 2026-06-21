@@ -1,9 +1,8 @@
 import type { Exhibition } from "./types";
 
-// Column order: A=id B=societyName C=title D=startDate E=endDate F=createdAt G=active
-// `active` is appended as column G so existing rows (which have no column G) remain valid.
+// Column order: A=id B=societyName C=title D=startDate E=endDate F=createdAt
 export const EXHIBITION_HEADER = [
-  "id", "societyName", "title", "startDate", "endDate", "createdAt", "active",
+  "id", "societyName", "title", "startDate", "endDate", "createdAt",
 ] as const;
 
 export function exhibitionToRow(ex: Exhibition): string[] {
@@ -11,12 +10,11 @@ export function exhibitionToRow(ex: Exhibition): string[] {
     ex.id, ex.societyName, ex.title,
     ex.startDate, ex.endDate,
     ex.createdAt,
-    String(ex.active),
   ];
 }
 
 export function rowToExhibition(row: string[]): Exhibition | null {
-  const [id, societyName, title, startDate, endDate, createdAt, active] = row;
+  const [id, societyName, title, startDate, endDate, createdAt] = row;
   if (!id) return null;
   return {
     id,
@@ -25,6 +23,6 @@ export function rowToExhibition(row: string[]): Exhibition | null {
     startDate:   startDate   ?? "",
     endDate:     endDate     ?? "",
     createdAt:   createdAt   ?? "",
-    active:      active === "true",   // missing/empty → false (backwards-compatible)
+    active:      false, // Will be populated by listExhibitions
   };
 }

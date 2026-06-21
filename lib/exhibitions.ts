@@ -7,7 +7,8 @@ import { validateExhibitionInput } from "./validation";
 import type { Exhibition, ExhibitionInput } from "./types";
 
 const TAB = "Exhibitions";
-const RANGE = `${TAB}!A:G`;
+const RANGE = `${TAB}!A:F`;
+const SETTINGS_TAB = "Settings";
 
 /** Ensure the tab exists with a header row. Safe to call repeatedly. */
 const ensureSheet = cache(async (): Promise<void> => {
@@ -15,11 +16,20 @@ const ensureSheet = cache(async (): Promise<void> => {
   const spreadsheetId = getSheetId();
 
   const meta = await sheets.spreadsheets.get({ spreadsheetId });
-  const exists = meta.data.sheets?.some((s) => s.properties?.title === TAB);
-  if (!exists) {
+  const existingTitles = meta.data.sheets?.map(s => s.properties?.title) || [];
+
+  const requests: any[] = [];
+  if (!existingTitles.includes(TAB)) {
+    requests.push({ addSheet: { properties: { title: TAB } } });
+  }
+  if (!existingTitles.includes(SETTINGS_TAB)) {
+    requests.push({ addSheet: { properties: { title: SETTINGS_TAB } } });
+  }
+
+  if (requests.length > 0) {
     await sheets.spreadsheets.batchUpdate({
       spreadsheetId,
-      requestBody: { requests: [{ addSheet: { properties: { title: TAB } } }] },
+      requestBody: { requests },
     });
   }
 
@@ -32,16 +42,40 @@ const ensureSheet = cache(async (): Promise<void> => {
       requestBody: { values: [[...EXHIBITION_HEADER]] },
     });
   }
+
+  const settingsHeader = await sheets.spreadsheets.values.get({ spreadsheetId, range: `${SETTINGS_TAB}!A1` });
+  if (!settingsHeader.data.values || settingsHeader.data.values.length === 0) {
+    await sheets.spreadsheets.values.update({
+      spreadsheetId,
+      range: `${SETTINGS_TAB}!A1`,
+      valueInputOption: "RAW",
+      requestBody: { values: [["ActiveExhibitionId", ""]] },
+    });
+  }
 });
 
 export const listExhibitions = cache(async (): Promise<Exhibition[]> => {
   await ensureSheet();
   const sheets = getSheetsClient();
-  const res = await sheets.spreadsheets.values.get({ spreadsheetId: getSheetId(), range: RANGE });
-  const rows = res.data.values ?? [];
+  const spreadsheetId = getSheetId();
+
+  const [exhibitionsRes, settingsRes] = await Promise.all([
+    sheets.spreadsheets.values.get({ spreadsheetId, range: RANGE }),
+    sheets.spreadsheets.values.get({ spreadsheetId, range: `${SETTINGS_TAB}!B1` })
+  ]);
+
+  const activeId = settingsRes.data.values?.[0]?.[0] ?? null;
+  const rows = exhibitionsRes.data.values ?? [];
+
   return rows
     .slice(1) // skip header
-    .map((r) => rowToExhibition(r as string[]))
+    .map((r) => {
+      const ex = rowToExhibition(r as string[]);
+      if (ex) {
+        ex.active = ex.id === activeId;
+      }
+      return ex;
+    })
     .filter((e): e is Exhibition => e !== null);
 });
 
@@ -134,30 +168,18 @@ export function getActiveExhibition(exhibitions: Exhibition[]): Exhibition | nul
 }
 
 /**
- * Mark one exhibition as active and clear the flag on all others.
- * Uses a single batchUpdate so the sheet stays consistent.
+ * Mark one exhibition as active and save it to Settings.
  */
 export async function setActiveExhibition(id: string): Promise<void> {
   await ensureSheet();
-  const sheets        = getSheetsClient();
+  const sheets = getSheetsClient();
   const spreadsheetId = getSheetId();
 
-  // Read column A to find every row's id (row 1 = header, rows 2+ = data).
-  const col  = await sheets.spreadsheets.values.get({ spreadsheetId, range: `${TAB}!A:A` });
-  const rows = col.data.values ?? [];
-
-  // Build one update per data row setting column G (active) to "true"/"false".
-  // Column G is appended after createdAt so existing rows without it read as false.
-  const data = rows.slice(1).map((row, i) => ({
-    range:  `${TAB}!G${i + 2}`,   // i+2 because slice(1) skips header (row 1)
-    values: [[row[0] === id ? "true" : "false"]],
-  }));
-
-  if (data.length === 0) return;
-
-  await sheets.spreadsheets.values.batchUpdate({
+  await sheets.spreadsheets.values.update({
     spreadsheetId,
-    requestBody: { valueInputOption: "RAW", data },
+    range: `${SETTINGS_TAB}!B1`,
+    valueInputOption: "RAW",
+    requestBody: { values: [[id]] },
   });
 }
 

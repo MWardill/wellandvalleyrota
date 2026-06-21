@@ -15,14 +15,14 @@ const ex: Exhibition = {
 describe("sheet-map", () => {
   it("has the expected header", () => {
     expect(EXHIBITION_HEADER).toEqual([
-      "id", "societyName", "title", "startDate", "endDate", "createdAt", "active",
+      "id", "societyName", "title", "startDate", "endDate", "createdAt",
     ]);
   });
 
   it("serializes an exhibition to a row in header order", () => {
     expect(exhibitionToRow(ex)).toEqual([
       "abc123", "Welland Valley Art Society", "Autumn 2026",
-      "2026-09-28", "2026-10-18", "2026-06-06T10:00:00.000Z", "false",
+      "2026-09-28", "2026-10-18", "2026-06-06T10:00:00.000Z",
     ]);
   });
 

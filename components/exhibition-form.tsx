@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import { DEFAULT_SOCIETY_NAME, type Exhibition } from "@/lib/types";
 import { createExhibitionAction, updateExhibitionAction } from "@/actions/exhibitions";
+import { SubmitButton } from "./submit-button";
 
 export default function ExhibitionForm({ existing }: { existing?: Exhibition }) {
   const formRef = useRef<HTMLFormElement>(null);
@@ -69,9 +70,9 @@ export default function ExhibitionForm({ existing }: { existing?: Exhibition }) 
         </label>
       </div>
 
-      <button type="submit" className="btn btn-primary">
+      <SubmitButton className="btn btn-primary">
         {isEdit ? "Save changes" : "Create exhibition"}
-      </button>
+      </SubmitButton>
     </form>
   );
 }

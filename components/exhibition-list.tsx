@@ -4,6 +4,7 @@ import { useState } from "react";
 import type { Exhibition } from "@/lib/types";
 import { deleteExhibitionAction, setActiveExhibitionAction } from "@/actions/exhibitions";
 import ExhibitionForm from "./exhibition-form";
+import { SubmitButton } from "./submit-button";
 
 function formatRange(start: string, end: string): string {
   const fmt = (s: string) =>
@@ -57,9 +58,9 @@ export default function ExhibitionList({ exhibitions }: { exhibitions: Exhibitio
                 {!ex.active && (
                   <form action={setActiveExhibitionAction}>
                     <input type="hidden" name="id" value={ex.id} />
-                    <button type="submit" className="btn btn-sm btn-primary">
+                    <SubmitButton className="btn btn-sm btn-primary">
                       Set active
-                    </button>
+                    </SubmitButton>
                   </form>
                 )}
                 <button className="btn btn-sm btn-outline" onClick={() => setEditingId(ex.id)}>
@@ -73,9 +74,9 @@ export default function ExhibitionList({ exhibitions }: { exhibitions: Exhibitio
                   }}
                 >
                   <input type="hidden" name="id" value={ex.id} />
-                  <button type="submit" className="btn btn-sm btn-error btn-outline">
+                  <SubmitButton className="btn btn-sm btn-error btn-outline">
                     Delete
-                  </button>
+                  </SubmitButton>
                 </form>
               </div>
             </div>

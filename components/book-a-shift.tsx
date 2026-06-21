@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useTransition } from "react";
+import { useState, useRef, useTransition, useEffect } from "react";
 import { bookShiftAction, cancelBookingAction } from "@/actions/bookings";
 import { SHIFTS, MAX_PER_SLOT } from "@/lib/shifts";
 import {
@@ -28,8 +28,17 @@ export default function BookAShift({ exhibition, bookings }: Props) {
   const [pendingCancel, setPendingCancel] = useState<{
     id: string; name: string;
   } | null>(null);
+  const [loadingSlot, setLoadingSlot] = useState<{
+    date: string; shiftId: string;
+  } | null>(null);
   const [formError,   setFormError]   = useState("");
   const [isPending, startTransition]  = useTransition();
+
+  useEffect(() => {
+    if (!isPending) {
+      setLoadingSlot(null);
+    }
+  }, [isPending]);
 
   const bookingDialogRef = useRef<HTMLDialogElement>(null);
   const cancelDialogRef  = useRef<HTMLDialogElement>(null);
@@ -61,10 +70,14 @@ export default function BookAShift({ exhibition, bookings }: Props) {
     e.preventDefault();
     setFormError("");
     const formData = new FormData(e.currentTarget);
+    if (pendingBooking) {
+      setLoadingSlot({ date: pendingBooking.date, shiftId: pendingBooking.shiftId });
+    }
     startTransition(async () => {
       const result = await bookShiftAction(formData);
       if (result.error) {
         setFormError(result.error);
+        setLoadingSlot(null);
       } else {
         bookingDialogRef.current?.close();
         setPendingBooking(null);
@@ -75,11 +88,15 @@ export default function BookAShift({ exhibition, bookings }: Props) {
   function handleCancelSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
+    const booking = bookings.find(b => b.id === pendingCancel?.id);
+    if (booking) {
+      setLoadingSlot({ date: booking.date, shiftId: booking.shiftId });
+    }
     startTransition(async () => {
       const result = await cancelBookingAction(formData);
       if (result.error) {
-        // Nothing else to show — just close anyway.
         console.error(result.error);
+        setLoadingSlot(null);
       }
       cancelDialogRef.current?.close();
       setPendingCancel(null);
@@ -182,12 +199,20 @@ export default function BookAShift({ exhibition, bookings }: Props) {
                 const booked = getSlot(selectedDate, shift.id);
                 const spaces = MAX_PER_SLOT - booked.length;
 
+                const isSlotLoading = isPending && loadingSlot?.date === selectedDate && loadingSlot?.shiftId === shift.id;
+
                 return (
                   <div
                     key={shift.id}
-                    className="border border-base-300 bg-white p-4
+                    className="relative overflow-hidden border border-base-300 bg-white p-4
                                hover:shadow-sm transition-shadow"
                   >
+                    {isSlotLoading && (
+                      <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/60 backdrop-blur-[1px]">
+                        <span className="loading loading-spinner loading-lg text-primary"></span>
+                      </div>
+                    )}
+
                     {/* Shift time */}
                     <div className="text-sm font-semibold text-primary
                                     tracking-wide mb-2">
