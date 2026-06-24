@@ -34,7 +34,7 @@ export default function HelpPage() {
 
       <section>
         <h3 className="font-display text-lg text-primary mb-1">Note to Exhibitors</h3>
-        <p>The expected requirement is that each exhibiting member will cover a minimum of two (2) shifts during the exhibition period.</p>
+        <p>The expected requirement is that each exhibiting member will cover a minimum of three (3) shifts during the exhibition period.</p>
       </section>
 
       <section>
