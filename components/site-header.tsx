@@ -20,7 +20,13 @@ export default function SiteHeader({ dateRange }: Props) {
             </p>
           )}
         </div>
-        <div className="hidden sm:block flex-shrink-0">
+        <a
+          href="https://www.wellandvalleyartsociety.co.uk/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hidden sm:block flex-shrink-0"
+          aria-label="Visit the Welland Valley Art Society website"
+        >
           <Image
             src="/wvas-logo.jpg"
             alt="Welland Valley Art Society"
@@ -29,7 +35,7 @@ export default function SiteHeader({ dateRange }: Props) {
             className="object-contain"
             priority
           />
-        </div>
+        </a>
       </div>
     </header>
   );
