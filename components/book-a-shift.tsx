@@ -149,7 +149,10 @@ export default function BookAShift({ exhibition, bookings }: Props) {
                 const totalBooked = SHIFTS.reduce(
                   (a, s) => a + getSlot(dk, s.id).length, 0
                 );
-                const totalSlots = SHIFTS.length * MAX_PER_SLOT;
+                const bookableShifts = SHIFTS.filter(s =>
+                  !(sp?.type === "slot-note" && sp.shiftId === s.id && sp.noBook)
+                );
+                const totalSlots = bookableShifts.length * MAX_PER_SLOT;
                 const isFull   = totalBooked >= totalSlots;
                 const isActive = selectedDate === dk;
 
