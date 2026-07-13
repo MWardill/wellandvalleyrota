@@ -56,14 +56,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <body style={{ fontFamily: "var(--font-source-sans), sans-serif" }}>
         <SiteHeader dateRange={dateRange} />
         <main className="max-w-7xl mx-auto px-4 py-8">
-          {isHolding ? (
-            <HoldingPage />
-          ) : (
-            <>
-              <NavTabs tabs={TABS} />
-              {children}
-            </>
-          )}
+          <NavTabs tabs={TABS} />
+          {isHolding ? <HoldingPage /> : children}
         </main>
         <div className="fixed bottom-2 right-3 text-[10px] text-base-content/30 font-mono pointer-events-none select-none z-50">
           rev {commitSha}

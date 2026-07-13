@@ -7,19 +7,6 @@ export default function HoldingPage() {
   return (
     <div>
 
-      {/* Visual-only tab strip — greyed out until site opens */}
-      <div className="flex gap-1 border-b border-base-300 mb-8 -mt-2">
-        {["Book a Shift", "Full Overview", "Who's Booked"].map(label => (
-          <div key={label}
-            className="px-4 py-2 text-sm text-base-content/30 select-none cursor-not-allowed">
-            {label}
-          </div>
-        ))}
-        <div className="px-4 py-2 text-sm text-secondary border-b-2 border-secondary font-medium -mb-px">
-          How to Use
-        </div>
-      </div>
-
       {/* Holding banner */}
       <div className="border-2 border-secondary bg-base-200 px-6 py-4 flex items-center gap-4 mb-6">
         <span className="text-2xl flex-shrink-0" aria-hidden="true">🗓️</span>
