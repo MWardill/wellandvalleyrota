@@ -6,12 +6,12 @@ import { SHIFTS, MAX_PER_SLOT } from "@/lib/shifts";
 import {
   getExhibitionDates,
   getSpecialDay,
+  getShiftSpecialDay,
   isDayClosed,
   isoDate,
   fmtLong,
   fmtShort,
   fmtWday,
-  type SpecialDaySlotNote,
 } from "@/lib/rota-config";
 import type { Exhibition, Booking } from "@/lib/types";
 
@@ -150,7 +150,7 @@ export default function BookAShift({ exhibition, bookings }: Props) {
                   (a, s) => a + getSlot(dk, s.id).length, 0
                 );
                 const bookableShifts = SHIFTS.filter(s =>
-                  !(sp?.type === "slot-note" && sp.shiftId === s.id && sp.noBook)
+                  !getShiftSpecialDay(d, exhibition.startDate, s.id)?.noBook
                 );
                 const totalSlots = bookableShifts.length * MAX_PER_SLOT;
                 const isFull   = totalBooked >= totalSlots;
@@ -184,7 +184,6 @@ export default function BookAShift({ exhibition, bookings }: Props) {
       {/* ── Shift cards ───────────────────────────────────────────────────── */}
       {selectedDate && (() => {
         const d  = new Date(selectedDate + "T12:00:00");
-        const sp = getSpecialDay(d, exhibition.startDate);
 
         return (
           <div>
@@ -193,9 +192,7 @@ export default function BookAShift({ exhibition, bookings }: Props) {
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
               {SHIFTS.map(shift => {
-                const isSlotSpecial =
-                  sp?.type === "slot-note" && sp.shiftId === shift.id;
-                const slotSp = isSlotSpecial ? (sp as SpecialDaySlotNote) : null;
+                const slotSp  = getShiftSpecialDay(d, exhibition.startDate, shift.id);
                 const noBook  = slotSp?.noBook ?? false;
                 const slotNote = slotSp?.note ?? null;
 

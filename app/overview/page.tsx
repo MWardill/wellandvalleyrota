@@ -4,11 +4,11 @@ import { formatPhone } from "@/lib/format";
 import {
   getExhibitionDates,
   getSpecialDay,
+  getShiftSpecialDay,
   isDayClosed,
   isoDate,
   fmtShort,
   fmtWday,
-  type SpecialDaySlotNote,
 } from "@/lib/rota-config";
 import { SHIFTS, MAX_PER_SLOT } from "@/lib/shifts";
 import type { Booking } from "@/lib/types";
@@ -100,9 +100,7 @@ export default async function OverviewPage() {
                         </td>
                       ))
                     : SHIFTS.map(shift => {
-                        const isSlotSpecial =
-                          sp?.type === "slot-note" && sp.shiftId === shift.id;
-                        const slotSp  = isSlotSpecial ? (sp as SpecialDaySlotNote) : null;
+                        const slotSp  = getShiftSpecialDay(d, active.startDate, shift.id);
                         const noBook  = slotSp?.noBook ?? false;
                         const slotNote = slotSp?.note ?? null;
                         const booked  = getSlot(dk, shift.id);

@@ -22,8 +22,11 @@ export type SpecialDay = SpecialDayClosed | SpecialDaySlotNote;
  * Day-offset → special rule. Offset 0 = startDate of the exhibition.
  * Currently meaningful only when the exhibition starts on 2026-09-28.
  */
-export const SPECIAL_DAYS: Record<number, SpecialDay> = {
-  0:  { type: "closed",    label: "Exhibition Hanging Day" },
+export const SPECIAL_DAYS: Record<number, SpecialDay | SpecialDay[]> = {
+  0: [
+    { type: "slot-note", shiftId: "s1", note: "Hanging Day", noBook: true },
+    { type: "slot-note", shiftId: "s2", note: "Hanging Day", noBook: true },
+  ],
   1:  { type: "slot-note", shiftId: "s3", note: "Private View – no booking", noBook: true },
   6:  { type: "closed",    label: "Closed" },
   13: { type: "closed",    label: "Closed" },
@@ -49,11 +52,25 @@ export function dayOffset(d: Date, startDate: string): number {
 }
 
 export function getSpecialDay(d: Date, startDate: string): SpecialDay | null {
-  return SPECIAL_DAYS[dayOffset(d, startDate)] ?? null;
+  const entry = SPECIAL_DAYS[dayOffset(d, startDate)];
+  if (!entry) return null;
+  if (Array.isArray(entry)) return (entry.find(e => e.type === "closed") as SpecialDayClosed) ?? null;
+  return entry;
 }
 
 export function isDayClosed(d: Date, startDate: string): boolean {
-  return getSpecialDay(d, startDate)?.type === "closed";
+  const entry = SPECIAL_DAYS[dayOffset(d, startDate)];
+  if (!entry) return false;
+  const entries = Array.isArray(entry) ? entry : [entry];
+  return entries.some(e => e.type === "closed");
+}
+
+export function getShiftSpecialDay(d: Date, startDate: string, shiftId: string): SpecialDaySlotNote | null {
+  const entry = SPECIAL_DAYS[dayOffset(d, startDate)];
+  if (!entry) return null;
+  const entries = Array.isArray(entry) ? entry : [entry];
+  const match = entries.find(e => e.type === "slot-note" && e.shiftId === shiftId);
+  return (match as SpecialDaySlotNote) ?? null;
 }
 
 export function isoDate(d: Date): string {

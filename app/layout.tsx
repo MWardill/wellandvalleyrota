@@ -4,6 +4,7 @@ import SiteHeader from "@/components/site-header";
 import NavTabs from "@/components/nav-tabs";
 import HoldingPage from "@/components/holding-page";
 import { listExhibitions, getActiveExhibition } from "@/lib/exhibitions";
+import { auth } from "@/lib/auth";
 import "./globals.css";
 
 // Booking opens on this date. Change this for each new exhibition.
@@ -41,7 +42,8 @@ function fmtDate(iso: string) {
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const commitSha = process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA?.substring(0, 7) || "dev";
-  const isHolding = new Date() < BOOKING_OPENS;
+  const session = await auth();
+  const isHolding = new Date() < BOOKING_OPENS && !session?.user;
 
   const exhibitions = isHolding ? [] : await listExhibitions();
   const active = isHolding ? null : getActiveExhibition(exhibitions);
