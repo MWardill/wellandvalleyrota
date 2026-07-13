@@ -2,8 +2,12 @@ import type { Metadata } from "next";
 import { Playfair_Display, Source_Sans_3 } from "next/font/google";
 import SiteHeader from "@/components/site-header";
 import NavTabs from "@/components/nav-tabs";
+import HoldingPage from "@/components/holding-page";
 import { listExhibitions, getActiveExhibition } from "@/lib/exhibitions";
 import "./globals.css";
+
+// Booking opens on this date. Change this for each new exhibition.
+const BOOKING_OPENS = new Date("2026-08-23T00:00:00");
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -37,9 +41,10 @@ function fmtDate(iso: string) {
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const commitSha = process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA?.substring(0, 7) || "dev";
+  const isHolding = new Date() < BOOKING_OPENS;
 
-  const exhibitions = await listExhibitions();
-  const active = getActiveExhibition(exhibitions);
+  const exhibitions = isHolding ? [] : await listExhibitions();
+  const active = isHolding ? null : getActiveExhibition(exhibitions);
   const dateRange = active
     ? `${fmtDate(active.startDate)} – ${fmtDate(active.endDate)}`
     : null;
@@ -49,8 +54,14 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <body style={{ fontFamily: "var(--font-source-sans), sans-serif" }}>
         <SiteHeader dateRange={dateRange} />
         <main className="max-w-7xl mx-auto px-4 py-8">
-          <NavTabs tabs={TABS} />
-          {children}
+          {isHolding ? (
+            <HoldingPage />
+          ) : (
+            <>
+              <NavTabs tabs={TABS} />
+              {children}
+            </>
+          )}
         </main>
         <div className="fixed bottom-2 right-3 text-[10px] text-base-content/30 font-mono pointer-events-none select-none z-50">
           rev {commitSha}
