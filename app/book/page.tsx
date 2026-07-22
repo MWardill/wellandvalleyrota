@@ -1,8 +1,12 @@
 import { listExhibitions, getActiveExhibition } from "@/lib/exhibitions";
 import { listBookings } from "@/lib/bookings";
+import { isHoldingNow } from "@/lib/holding";
+import HoldingPage from "@/components/holding-page";
 import BookAShift from "@/components/book-a-shift";
 
 export default async function BookPage() {
+  if (await isHoldingNow()) return <HoldingPage />;
+
   const exhibitions = await listExhibitions();
   const active      = getActiveExhibition(exhibitions);
 
