@@ -10,8 +10,12 @@ import {
   type SpecialDaySlotNote,
 } from "@/lib/rota-config";
 import { SHIFTS } from "@/lib/shifts";
+import { isHoldingNow } from "@/lib/holding";
+import HoldingPage from "@/components/holding-page";
 
 export default async function BookedPage() {
+  if (await isHoldingNow()) return <HoldingPage />;
+
   const exhibitions = await listExhibitions();
   const active      = getActiveExhibition(exhibitions);
 

@@ -2,13 +2,10 @@ import type { Metadata } from "next";
 import { Playfair_Display, Source_Sans_3 } from "next/font/google";
 import SiteHeader from "@/components/site-header";
 import NavTabs from "@/components/nav-tabs";
-import HoldingPage from "@/components/holding-page";
 import { listExhibitions, getActiveExhibition } from "@/lib/exhibitions";
 import { auth } from "@/lib/auth";
+import { BOOKING_OPENS } from "@/lib/holding";
 import "./globals.css";
-
-// Booking opens on this date. Change this for each new exhibition.
-const BOOKING_OPENS = new Date("2026-08-23T00:00:00");
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -31,6 +28,7 @@ const TABS = [
   { id: "overview", label: "Full Overview", href: "/overview" },
   { id: "booked", label: "Who's Booked", href: "/booked" },
   { id: "help", label: "How to Use", href: "/help" },
+  { id: "how-to-enter", label: "How to Enter", href: "/how-to-enter" },
   { id: "settings", label: "Settings", href: "/settings", requireAuthentication: true, hideOnMobile: true },
 ];
 
@@ -57,7 +55,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <SiteHeader dateRange={dateRange} />
         <main className="max-w-7xl mx-auto px-4 py-8">
           <NavTabs tabs={TABS} />
-          {isHolding ? <HoldingPage /> : children}
+          {children}
         </main>
         <div className="fixed bottom-2 right-3 text-[10px] text-base-content/30 font-mono pointer-events-none select-none z-50">
           rev {commitSha}

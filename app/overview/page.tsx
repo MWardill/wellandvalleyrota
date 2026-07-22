@@ -12,8 +12,12 @@ import {
 } from "@/lib/rota-config";
 import { SHIFTS, MAX_PER_SLOT } from "@/lib/shifts";
 import type { Booking } from "@/lib/types";
+import { isHoldingNow } from "@/lib/holding";
+import HoldingPage from "@/components/holding-page";
 
 export default async function OverviewPage() {
+  if (await isHoldingNow()) return <HoldingPage />;
+
   const exhibitions = await listExhibitions();
   const active      = getActiveExhibition(exhibitions);
 
