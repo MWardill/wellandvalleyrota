@@ -28,7 +28,6 @@ const TABS = [
   { id: "overview", label: "Full Overview", href: "/overview" },
   { id: "booked", label: "Who's Booked", href: "/booked" },
   { id: "help", label: "How to Use", href: "/help" },
-  { id: "how-to-enter", label: "How to Enter", href: "/how-to-enter" },
   { id: "settings", label: "Settings", href: "/settings", requireAuthentication: true, hideOnMobile: true },
 ];
 
