@@ -34,6 +34,11 @@
 
 }
 
+/* Slightly lighter green for the header dates bar, distinct from --color-primary. */
+:root {
+  --wvas-green-mid: #3d6b5a;
+}
+
 /* Serif display headings, matching the original Playfair usage. */
 .font-display {
   font-family: var(--font-playfair), Georgia, serif;
