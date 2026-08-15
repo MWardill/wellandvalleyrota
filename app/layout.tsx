@@ -2,9 +2,6 @@ import type { Metadata } from "next";
 import { Playfair_Display, Source_Sans_3 } from "next/font/google";
 import SiteHeader from "@/components/site-header";
 import NavTabs from "@/components/nav-tabs";
-import { listExhibitions, getActiveExhibition } from "@/lib/exhibitions";
-import { auth } from "@/lib/auth";
-import { BOOKING_OPENS } from "@/lib/holding";
 import "./globals.css";
 
 const playfair = Playfair_Display({
@@ -31,27 +28,13 @@ const TABS = [
   { id: "settings", label: "Settings", href: "/settings", requireAuthentication: true, hideOnMobile: true },
 ];
 
-function fmtDate(iso: string) {
-  return new Date(iso + "T12:00:00").toLocaleDateString("en-GB", {
-    day: "numeric", month: "long", year: "numeric",
-  });
-}
-
-export default async function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   const commitSha = process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA?.substring(0, 7) || "dev";
-  const session = await auth();
-  const isHolding = new Date() < BOOKING_OPENS && !session?.user;
-
-  const exhibitions = isHolding ? [] : await listExhibitions();
-  const active = isHolding ? null : getActiveExhibition(exhibitions);
-  const dateRange = active
-    ? `${fmtDate(active.startDate)} – ${fmtDate(active.endDate)}`
-    : null;
 
   return (
     <html lang="en" data-theme="gallery" className={`${playfair.variable} ${sourceSans.variable}`} suppressHydrationWarning>
       <body style={{ fontFamily: "var(--font-source-sans), sans-serif" }}>
-        <SiteHeader dateRange={dateRange} />
+        <SiteHeader />
         <main className="max-w-7xl mx-auto px-4 py-8">
           <NavTabs tabs={TABS} />
           {children}
