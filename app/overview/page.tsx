@@ -10,7 +10,7 @@ import {
   fmtShort,
   fmtWday,
 } from "@/lib/rota-config";
-import { SHIFTS, MAX_PER_SLOT } from "@/lib/shifts";
+import { SHIFTS, MAX_PER_SLOT, REQUIRED_PER_SLOT } from "@/lib/shifts";
 import type { Booking } from "@/lib/types";
 import { isHoldingNow } from "@/lib/holding";
 import HoldingPage from "@/components/holding-page";
@@ -123,7 +123,7 @@ export default async function OverviewPage() {
                               <>
                                 <span className="text-base-content/25 italic text-xs">—</span>
                                 <div className="text-[11px] text-secondary mt-0.5">
-                                  {MAX_PER_SLOT} needed
+                                  {REQUIRED_PER_SLOT} needed
                                 </div>
                               </>
                             ) : (
@@ -138,9 +138,14 @@ export default async function OverviewPage() {
                                     )}
                                   </div>
                                 ))}
-                                {booked.length < MAX_PER_SLOT && (
+                                {booked.length < REQUIRED_PER_SLOT && (
                                   <div className="text-[11px] text-secondary mt-0.5">
-                                    +{MAX_PER_SLOT - booked.length} needed
+                                    +{REQUIRED_PER_SLOT - booked.length} needed
+                                  </div>
+                                )}
+                                {booked.length >= REQUIRED_PER_SLOT && booked.length < MAX_PER_SLOT && (
+                                  <div className="text-[11px] text-base-content/35 italic mt-0.5">
+                                    optional slot open
                                   </div>
                                 )}
                                 {slotNote && !noBook && (

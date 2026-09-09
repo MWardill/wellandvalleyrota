@@ -11,4 +11,5 @@ export const SHIFTS: Shift[] = [
   { id: "s3", label: "5:00pm – Closing" },
 ];
 
-export const MAX_PER_SLOT = 2;
+export const REQUIRED_PER_SLOT = 2;
+export const MAX_PER_SLOT      = 3;

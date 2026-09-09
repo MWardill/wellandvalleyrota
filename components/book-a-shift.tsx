@@ -2,7 +2,7 @@
 
 import { useState, useRef, useTransition, useEffect } from "react";
 import { bookShiftAction, cancelBookingAction } from "@/actions/bookings";
-import { SHIFTS, MAX_PER_SLOT } from "@/lib/shifts";
+import { SHIFTS, MAX_PER_SLOT, REQUIRED_PER_SLOT } from "@/lib/shifts";
 import {
   getExhibitionDates,
   getSpecialDay,
@@ -114,7 +114,8 @@ export default function BookAShift({ exhibition, bookings }: Props) {
 
       <p className="text-sm text-base-content/60 mb-6">
         Select a date to see available shifts. Each shift needs{" "}
-        <strong>2 stewards</strong>. Click a shift to sign up.
+        <strong>2 stewards</strong>, with an optional third slot available.
+        Click a shift to sign up.
       </p>
 
       {/* ── Date strip ────────────────────────────────────────────────────── */}
@@ -152,17 +153,21 @@ export default function BookAShift({ exhibition, bookings }: Props) {
                 const bookableShifts = SHIFTS.filter(s =>
                   !getShiftSpecialDay(d, exhibition.startDate, s.id)?.noBook
                 );
-                const totalSlots = bookableShifts.length * MAX_PER_SLOT;
-                const isFull   = totalBooked >= totalSlots;
-                const isActive = selectedDate === dk;
+                const requiredTotal = bookableShifts.length * REQUIRED_PER_SLOT;
+                const maxTotal      = bookableShifts.length * MAX_PER_SLOT;
+                const isAllFull     = totalBooked >= maxTotal;
+                const isSatisfied   = totalBooked >= requiredTotal;
+                const isActive      = selectedDate === dk;
 
                 const statusClass = isActive
                   ? "bg-primary border-primary text-primary-content"
-                  : isFull
-                    ? "bg-red-100 border-red-400 text-red-800 hover:border-red-600"
-                    : totalBooked > 0
-                      ? "bg-amber-50 border-amber-400 text-amber-800 hover:border-amber-600"
-                      : "bg-green-50 border-green-400 text-green-800 hover:border-green-600";
+                  : isAllFull
+                    ? "bg-blue-50 border-blue-400 text-blue-800 hover:border-blue-600"
+                    : isSatisfied
+                      ? "bg-green-50 border-green-400 text-green-800 hover:border-green-600"
+                      : totalBooked > 0
+                        ? "bg-amber-50 border-amber-400 text-amber-800 hover:border-amber-600"
+                        : "bg-green-50 border-green-400 text-green-800 hover:border-green-600";
 
                 return (
                   <button
@@ -172,7 +177,7 @@ export default function BookAShift({ exhibition, bookings }: Props) {
                   >
                     <div className="text-[10px] opacity-70">{fmtWday(d)}</div>
                     <div className="font-semibold">{fmtShort(d)}</div>
-                    {isFull && <div className="text-[10px] mt-0.5">Full</div>}
+                    {isAllFull && <div className="text-[10px] mt-0.5">Full</div>}
                   </button>
                 );
               })}
@@ -236,13 +241,15 @@ export default function BookAShift({ exhibition, bookings }: Props) {
                         {/* Booked people rows */}
                         <div className="mb-3">
                           {Array.from({ length: MAX_PER_SLOT }).map((_, i) => {
-                            const person = booked[i];
+                            const person     = booked[i];
+                            const isOptional = i >= REQUIRED_PER_SLOT;
                             return (
                               <div
                                 key={i}
                                 className={[
                                   "flex items-center justify-between py-1.5 min-h-[32px]",
-                                  i > 0 ? "border-t border-base-200" : "",
+                                  i > 0 && !isOptional ? "border-t border-base-200" : "",
+                                  isOptional ? "border-t border-dashed border-base-300 mt-1" : "",
                                 ].join(" ")}
                               >
                                 {person ? (
@@ -264,7 +271,7 @@ export default function BookAShift({ exhibition, bookings }: Props) {
                                   </>
                                 ) : (
                                   <span className="text-xs text-base-content/35 italic">
-                                    Open slot
+                                    {isOptional ? "Optional 3rd Steward" : "Open slot"}
                                   </span>
                                 )}
                               </div>
