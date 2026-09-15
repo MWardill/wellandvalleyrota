@@ -8,7 +8,7 @@ export interface Shift {
 export const SHIFTS: Shift[] = [
   { id: "s1", label: "10:00am – 1:30pm" },
   { id: "s2", label: "1:30pm – 5:00pm" },
-  { id: "s3", label: "5:00pm – Closing" },
+  { id: "s3", label: "5:00pm – 8:30pm" },
 ];
 
 export const REQUIRED_PER_SLOT = 2;
