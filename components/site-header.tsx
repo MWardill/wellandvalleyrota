@@ -2,9 +2,9 @@ import Image from "next/image";
 
 const EXHIBITION_DATES = [
   { label: "Entry Opens", value: "Sun 23 Aug" },
-  { label: "Entry Closes", value: "Fri 18 Sep" },
+  { label: "Entry Closes", value: "Thurs 24 Sept" },
   { label: "Hand-In", value: "Mon 28 Sep · 9:30–10:30am" },
-  { label: "Private Preview", value: "Tue 29 Sep (TBC)" },
+  { label: "Private Preview", value: "Tue 29 Sep" },
   { label: "Exhibition Dates", value: "29 Sep – 17 Oct" },
   { label: "Collect Unsold Work", value: "Mon 19 Oct · 9am–12noon" },
 ];

@@ -26,6 +26,7 @@ export const SPECIAL_DAYS: Record<number, SpecialDay | SpecialDay[]> = {
   0: [
     { type: "slot-note", shiftId: "s1", note: "Hanging Day", noBook: true },
     { type: "slot-note", shiftId: "s2", note: "Hanging Day", noBook: true },
+    { type: "slot-note", shiftId: "s3", note: "Closed",      noBook: true },
   ],
   1:  { type: "slot-note", shiftId: "s3", note: "Private View – no booking", noBook: true },
   6:  { type: "closed",    label: "Closed" },
