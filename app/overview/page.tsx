@@ -145,7 +145,7 @@ export default async function OverviewPage() {
                                 )}
                                 {booked.length >= REQUIRED_PER_SLOT && booked.length < MAX_PER_SLOT && (
                                   <div className="text-[11px] text-base-content/35 italic mt-0.5">
-                                    optional slot open
+                                    Third Stewarding Slot Available
                                   </div>
                                 )}
                                 {slotNote && !noBook && (
