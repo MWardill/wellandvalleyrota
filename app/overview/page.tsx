@@ -50,7 +50,7 @@ export default async function OverviewPage() {
         </p>
       )}
       <p className="text-sm text-base-content/60 mb-6">
-        All days at a glance. Shifts still needing volunteers are highlighted. Please try to fill the required slots before booking as a third Steward.
+        All days at a glance. Shifts still needing volunteers are highlighted. Please try to fill the &ldquo;needed&rdquo; slots before booking as a third Steward.
       </p>
 
       <div className="overflow-x-auto">
