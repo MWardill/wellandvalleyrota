@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { listBookings, createBooking, deleteBooking } from "@/lib/bookings";
 import { SHIFTS, MAX_PER_SLOT } from "@/lib/shifts";
+import { formatPhone } from "@/lib/format";
 
 const ALL_PATHS = ["/", "/overview", "/booked"] as const;
 
@@ -17,7 +18,7 @@ export async function bookShiftAction(
   const date         = String(formData.get("date")         ?? "").trim();
   const shiftId      = String(formData.get("shiftId")      ?? "").trim();
   const name         = String(formData.get("name")         ?? "").trim();
-  const phone        = String(formData.get("phone")        ?? "").trim();
+  const phone        = formatPhone(String(formData.get("phone") ?? "").trim());
 
   if (!name)  return { error: "Please enter your name." };
   if (!phone) return { error: "Please enter your phone number." };
